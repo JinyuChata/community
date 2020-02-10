@@ -2,6 +2,8 @@ package org.chu.community.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.chu.community.model.User;
 
 @Mapper
@@ -11,4 +13,6 @@ public interface UserMapper {
             " values (#{name}, #{accountId}, #{token}, #{gmtCreate}, #{gmtModified})")
     void insert(User user);
 
+    @Select("SELECT * FROM user WHERE token = #{token}")
+    User findByToken(@Param("token") String token);
 }
