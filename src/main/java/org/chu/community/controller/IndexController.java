@@ -1,7 +1,11 @@
 package org.chu.community.controller;
 
+import org.chu.community.dto.QuestionDTO;
+import org.chu.community.mapper.QuestionMapper;
 import org.chu.community.mapper.UserMapper;
+import org.chu.community.model.Question;
 import org.chu.community.model.User;
+import org.chu.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,20 +16,23 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class IndexController {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private QuestionService questionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request) {
+    public String index(HttpServletRequest request, Model model) {
         // 访问index-controller时，需要注入UserMapper
         Cookie[] cookies = request.getCookies();
         String token = null;
         if (cookies != null)
             for (Cookie c : cookies) {
-                if (c.getName().equals("token")){
+                if (c.getName().equals("token")) {
                     token = c.getValue();
                     if (token != null) {
                         User user = userMapper.findByToken(token);
@@ -33,6 +40,10 @@ public class IndexController {
                     }
                 }
             }
+
+        List<QuestionDTO> questionDTOList = questionService.list();
+        model.addAttribute("questions", questionDTOList);
+
         return "index";
     }
 }

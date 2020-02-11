@@ -1,9 +1,10 @@
-package org.chu.community.model;
+package org.chu.community.dto;
 
 import lombok.Data;
+import org.chu.community.model.User;
 
 @Data
-public class Question {
+public class QuestionDTO {
     private Integer id;
     private String title;
     private String description;
@@ -14,4 +15,5 @@ public class Question {
     private Integer viewCount;
     private Integer commentCount;
     private Integer likeCount;
+    private User user;
 }
