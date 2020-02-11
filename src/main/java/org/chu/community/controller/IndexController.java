@@ -23,15 +23,16 @@ public class IndexController {
         // 访问index-controller时，需要注入UserMapper
         Cookie[] cookies = request.getCookies();
         String token = null;
-        for (Cookie c : cookies) {
-            if (c.getName().equals("token")){
-                token = c.getValue();
-                if (token != null) {
-                    User user = userMapper.findByToken(token);
-                    request.getSession().setAttribute("user", user);
+        if (cookies != null)
+            for (Cookie c : cookies) {
+                if (c.getName().equals("token")){
+                    token = c.getValue();
+                    if (token != null) {
+                        User user = userMapper.findByToken(token);
+                        request.getSession().setAttribute("user", user);
+                    }
                 }
             }
-        }
         return "index";
     }
 }

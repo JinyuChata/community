@@ -11,3 +11,11 @@
 
 ## 工具
 [Visual Paradigm](http://www.visual-paradigm.com/)
+
+[Flyway](https://flywaydb.org/getstarted/firststeps/maven)
+
+## 脚本
+
+```bash
+mvn flyway:migrate
+```
