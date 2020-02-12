@@ -1,5 +1,6 @@
 package org.chu.community.service;
 
+import org.chu.community.dto.PaginationDTO;
 import org.chu.community.dto.QuestionDTO;
 import org.chu.community.mapper.QuestionMapper;
 import org.chu.community.mapper.UserMapper;
@@ -22,9 +23,23 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> list() {
-        List<Question> questionList = questionMapper.list();
+//    cnt 每页数量
+//      0, 5 page1   (n-1)*cnt, cnt
+//      5, 5 page2
+//      10,5 page3
+//
+//    total: tot
+//    tot%cnt==0 -> tot/cnt + 1
+//    tot%cnt!=0 -> tot/cnt
+
+    public PaginationDTO list(int currentPage, int sizeOfOnePage) {
+        if (currentPage < 1) currentPage = 1;
+        int offset = sizeOfOnePage * (currentPage - 1);
+
+        List<Question> questionList = questionMapper.list(offset, sizeOfOnePage);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+        PaginationDTO paginationDTO = new PaginationDTO();
         for (Question q: questionList) {
             User user = userMapper.findById(q.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
@@ -33,6 +48,10 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        return questionDTOList;
+        paginationDTO.setQuestions(questionDTOList);
+        Integer totCount = questionMapper.count();
+        paginationDTO.setPagination(totCount, currentPage, sizeOfOnePage);
+
+        return paginationDTO;
     }
 }

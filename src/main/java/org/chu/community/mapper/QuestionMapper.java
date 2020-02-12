@@ -2,6 +2,7 @@ package org.chu.community.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.chu.community.model.Question;
 
@@ -14,6 +15,9 @@ public interface QuestionMapper {
             "VALUES(#{title}, #{description}, #{gmtCreate}, #{gmtModified}, #{creator}, #{tag})")
     public void createQuestion(Question question);
 
-    @Select("SELECT * FROM question")
-    List<Question> list();
+    @Select("SELECT * FROM question LIMIT #{offset}, #{size}")
+    List<Question> list(@Param("offset") int offset,@Param("size") int size);
+
+    @Select("SELECT COUNT(1) FROM question")
+    Integer count();
 }

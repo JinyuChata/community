@@ -1,5 +1,6 @@
 package org.chu.community.controller;
 
+import org.chu.community.dto.PaginationDTO;
 import org.chu.community.dto.QuestionDTO;
 import org.chu.community.mapper.QuestionMapper;
 import org.chu.community.mapper.UserMapper;
@@ -26,7 +27,9 @@ public class IndexController {
     private QuestionService questionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request, Model model) {
+    public String index(HttpServletRequest request, Model model,
+                        @RequestParam(name = "page", defaultValue = "1") int page,
+                        @RequestParam(name = "size", defaultValue = "8") int size) {
         // 访问index-controller时，需要注入UserMapper
         Cookie[] cookies = request.getCookies();
         String token = null;
@@ -41,8 +44,8 @@ public class IndexController {
                 }
             }
 
-        List<QuestionDTO> questionDTOList = questionService.list();
-        model.addAttribute("questions", questionDTOList);
+        PaginationDTO paginationDTO = questionService.list(page, size);
+        model.addAttribute("paginationDTOs", paginationDTO);
 
         return "index";
     }
